@@ -6,6 +6,7 @@
  */
 
 using System.Diagnostics.CodeAnalysis;
+using DiamondKata.Models;
 using DiamondKata.Services;
 
 namespace DiamondKata;
@@ -15,19 +16,31 @@ public static class Program
 {
     public static void Main()
     {
-        Console.Write("Enter a number between 2 and 5: ");
-        var input = Console.ReadLine();
+        var rangeSettings = RangeSettingsProvider.Load();
+        var validator = new InputValidator(rangeSettings.LowerLimit, rangeSettings.UpperLimit);
+        var generator = new DiamondGenerator(rangeSettings.LowerLimit, rangeSettings.UpperLimit);
 
-        var validator = new InputValidator();
-        var validationResult = validator.Validate(input);
-
-        if (!validationResult.IsValid)
+        while (true)
         {
-            Console.WriteLine(validationResult.ErrorMessage);
-            return;
+            Console.Write($"Enter a number between {rangeSettings.LowerLimit} and {rangeSettings.UpperLimit}: ");
+            var input = Console.ReadLine();
+
+            var validationResult = validator.Validate(input);
+
+            if (!validationResult.IsValid)
+            {
+                Console.WriteLine(validationResult.ErrorMessage);
+                Console.WriteLine($"Please try again with a value between {rangeSettings.LowerLimit} and {rangeSettings.UpperLimit}.");
+                Console.WriteLine();
+                continue;
+            }
+
+            Console.WriteLine(generator.Generate(validationResult.Level));
+            break;
         }
 
-        var generator = new DiamondGenerator();
-        Console.WriteLine(generator.Generate(validationResult.Level));
+        Console.WriteLine();
+        Console.Write("Press any key to exit...");
+        Console.ReadKey(true);
     }
 }

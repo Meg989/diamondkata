@@ -2,15 +2,15 @@
 
 ## Project Overview
 
-This repository contains a production-quality C# (.NET 8) console application for the Diamond Kata. The application accepts a numeric value from 2 to 5, maps that value to a maximum letter from B to E, and generates a centered diamond pattern.
+This repository contains a production-quality C# (.NET 8) console application for the Diamond Kata. The application accepts a numeric value in a configurable range (default `2` to `5`), maps that value to a maximum letter, and generates a centered diamond pattern.
 
 ## Requirements
 
 ### Functional Requirements
 
 - Prompt the user to enter a single number.
-- Accept only values `2`, `3`, `4`, or `5`.
-- Interpret those values as the maximum diamond letter:
+- Accept only values between configured lower and upper limits.
+- By default, interpret the values as the maximum diamond letter:
   - `2 = B`
   - `3 = C`
   - `4 = D`
@@ -18,8 +18,8 @@ This repository contains a production-quality C# (.NET 8) console application fo
 - Generate the correct diamond output for valid input.
 - Validate invalid inputs and return the required messages:
   - Empty input: `Error: Input cannot be empty.`
-  - Non-numeric input: `Error: Please enter a numeric value between 2 and 5.`
-  - Out-of-range numeric input: `Error: Value must be between 2 and 5.`
+  - Non-numeric input: `Error: Please enter a numeric value between <lower> and <upper>.`
+  - Out-of-range numeric input: `Error: Value must be between <lower> and <upper>.`
 
 ### Technical Requirements
 
@@ -30,7 +30,7 @@ This repository contains a production-quality C# (.NET 8) console application fo
 
 ## Assumptions
 
-- Only values from `2` to `5` are supported.
+- Defaults are `2` (lower) and `5` (upper), and both can be changed in configuration.
 - The solution is implemented as a console application.
 - All messages are presented in English.
 
@@ -39,9 +39,12 @@ This repository contains a production-quality C# (.NET 8) console application fo
 ### Components
 
 - `Program.cs`: Console entry point responsible only for prompting, validating, and displaying output.
+- `appsettings.json`: Stores configurable input bounds under `DiamondSettings`.
 - `Services/InputValidator.cs`: Validates empty, numeric, and range rules.
 - `Services/DiamondGenerator.cs`: Generates the diamond string with no console coupling.
+- `Services/RangeSettingsProvider.cs`: Loads configured lower and upper bounds.
 - `Models/ValidationResult.cs`: Carries validation status, parsed level, and error message.
+- `Models/RangeSettings.cs`: Represents configured lower and upper bounds.
 - `Tests/DiamondGeneratorTests.cs`: Verifies the expected diamond output for levels 2 through 5.
 - `Tests/InputValidatorTests.cs`: Verifies valid, range, non-numeric, and empty input scenarios.
 
@@ -51,6 +54,21 @@ This repository contains a production-quality C# (.NET 8) console application fo
 - `DiamondGenerator.Generate` returns a string, which keeps the business logic testable and reusable.
 - Defensive programming is applied by guarding the generator against unsupported levels.
 - Dependencies are injected through object usage boundaries rather than embedding business logic in the console entry point.
+
+## Configuration
+
+The lower and upper input limits are configurable in `DiamondKata/appsettings.json`:
+
+```json
+{
+  "DiamondSettings": {
+    "LowerLimit": 2,
+    "UpperLimit": 5
+  }
+}
+```
+
+If the user enters a value outside the configured range, the application shows a validation message and exits gracefully without generating output.
 
 ## Running the Application
 
@@ -102,7 +120,6 @@ E       E
 
 ## Future Enhancements
 
-- Configurable maximum size
 - Lowercase support
 - Web UI
 - API endpoint

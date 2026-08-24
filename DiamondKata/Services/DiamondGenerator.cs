@@ -9,14 +9,25 @@ namespace DiamondKata.Services;
 
 public sealed class DiamondGenerator
 {
-    private const int MinimumLevel = 2;
-    private const int MaximumLevel = 5;
+    private readonly int minimumLevel;
+    private readonly int maximumLevel;
+
+    public DiamondGenerator(int minimumLevel = 2, int maximumLevel = 5)
+    {
+        if (minimumLevel >= maximumLevel)
+        {
+            throw new ArgumentException("Lower limit must be less than upper limit.");
+        }
+
+        this.minimumLevel = minimumLevel;
+        this.maximumLevel = maximumLevel;
+    }
 
     public string Generate(int level)
     {
-        if (level < MinimumLevel || level > MaximumLevel)
+        if (level < minimumLevel || level > maximumLevel)
         {
-            throw new ArgumentOutOfRangeException(nameof(level), "Value must be between 2 and 5.");
+            throw new ArgumentOutOfRangeException(nameof(level), $"Value must be between {minimumLevel} and {maximumLevel}.");
         }
 
         var rows = new List<string>();

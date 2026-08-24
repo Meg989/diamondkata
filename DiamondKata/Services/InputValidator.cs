@@ -11,11 +11,20 @@ namespace DiamondKata.Services;
 
 public sealed class InputValidator
 {
-    private const int MinimumLevel = 2;
-    private const int MaximumLevel = 5;
-    private const string RangeErrorMessage = "Error: Value must be between 2 and 5.";
-    private const string NumericErrorMessage = "Error: Please enter a numeric value between 2 and 5.";
     private const string EmptyErrorMessage = "Error: Input cannot be empty.";
+    private readonly int minimumLevel;
+    private readonly int maximumLevel;
+
+    public InputValidator(int minimumLevel = 2, int maximumLevel = 5)
+    {
+        if (minimumLevel >= maximumLevel)
+        {
+            throw new ArgumentException("Lower limit must be less than upper limit.");
+        }
+
+        this.minimumLevel = minimumLevel;
+        this.maximumLevel = maximumLevel;
+    }
 
     public ValidationResult Validate(string? input)
     {
@@ -26,12 +35,12 @@ public sealed class InputValidator
 
         if (!int.TryParse(input, out var level))
         {
-            return ValidationResult.Failure(NumericErrorMessage);
+            return ValidationResult.Failure($"Error: Please enter a numeric value between {minimumLevel} and {maximumLevel}.");
         }
 
-        if (level < MinimumLevel || level > MaximumLevel)
+        if (level < minimumLevel || level > maximumLevel)
         {
-            return ValidationResult.Failure(RangeErrorMessage);
+            return ValidationResult.Failure($"Error: Value must be between {minimumLevel} and {maximumLevel}.");
         }
 
         return ValidationResult.Success(level);

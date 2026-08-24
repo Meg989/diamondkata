@@ -64,4 +64,27 @@ public sealed class InputValidatorTests
         Assert.False(result.IsValid);
         Assert.Equal("Error: Input cannot be empty.", result.ErrorMessage);
     }
+
+    [Fact]
+    public void Validate_CustomRange_ValidInput_ReturnsSuccess()
+    {
+        var validator = new InputValidator(3, 7);
+
+        var result = validator.Validate("6");
+
+        Assert.True(result.IsValid);
+        Assert.Equal(6, result.Level);
+        Assert.Null(result.ErrorMessage);
+    }
+
+    [Fact]
+    public void Validate_CustomRange_OutOfRangeInput_ReturnsRangeError()
+    {
+        var validator = new InputValidator(3, 7);
+
+        var result = validator.Validate("2");
+
+        Assert.False(result.IsValid);
+        Assert.Equal("Error: Value must be between 3 and 7.", result.ErrorMessage);
+    }
 }
