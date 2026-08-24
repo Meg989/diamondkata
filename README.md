@@ -1,0 +1,2 @@
+# diamondkata
+Code Kata
