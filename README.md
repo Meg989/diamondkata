@@ -57,7 +57,7 @@ This repository contains a production-quality C# (.NET 8) console application fo
 ```bash
 dotnet restore
 dotnet build
-dotnet run --project /home/runner/work/diamondkata/diamondkata/DiamondKata/DiamondKata.csproj
+dotnet run --project DiamondKata/DiamondKata.csproj
 ```
 
 ## Running Tests
